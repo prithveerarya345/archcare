@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uvx ruff check .
+      - run: uvx ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Configure git identity (sync commits in tests)
+        run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.com"
+      - run: uv run pytest -v
+
+  test-arch:
+    # the real target: run the suite inside Arch Linux, where pacman exists
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - run: pacman -Syu --noconfirm git python uv
+      - uses: actions/checkout@v4
+      - run: |
+          git config --global user.name "ci"
+          git config --global user.email "ci@example.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: uv run pytest -v

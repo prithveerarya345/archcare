@@ -1,0 +1,8 @@
+[Unit]
+Description=archcare: back up tracked dotfiles to the git repo
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/archcare dots sync --quiet
+Nice=10
+IOSchedulingClass=idle
