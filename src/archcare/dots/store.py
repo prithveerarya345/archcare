@@ -82,9 +82,7 @@ def collect(paths: Paths, m: Manifest) -> tuple[dict[str, Path], list[tuple[str,
                 consider(p, "etc/" + p.relative_to("/etc").as_posix(), m.exclude)
             else:
                 unreadable.append(p)
-        skipped.extend(
-            (f"etc/{p.relative_to('/etc')}", "needs root to check") for p in unreadable
-        )
+        skipped.extend((f"etc/{p.relative_to('/etc')}", "needs root to check") for p in unreadable)
     return wanted, skipped
 
 
