@@ -1,0 +1,11 @@
+[Unit]
+Description=archcare: run weekly jobs
+
+[Timer]
+OnCalendar=Sun 11:00
+RandomizedDelaySec=15m
+# catch up after the laptop was off/asleep at the scheduled time
+Persistent=true
+
+[Install]
+WantedBy=timers.target

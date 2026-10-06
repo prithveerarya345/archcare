@@ -1,0 +1,8 @@
+[Unit]
+Description=archcare: daily maintenance jobs
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/archcare run daily
+Nice=10
+IOSchedulingClass=idle

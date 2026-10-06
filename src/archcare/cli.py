@@ -8,6 +8,13 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from archcare.cmd import backup as backup_cmd
+from archcare.cmd import clean as clean_cmd
+from archcare.cmd import doctor as doctor_cmd
+from archcare.cmd import explain as explain_cmd
+from archcare.cmd import pacnew as pacnew_cmd
+from archcare.cmd import run as run_cmd
+from archcare.cmd import update as update_cmd
 from archcare.dots import manifest as mf
 from archcare.dots import store
 from archcare.dots.scan import Status, scan
@@ -240,48 +247,16 @@ def install_timers(dry_run: bool = typer.Option(False, "--dry-run", "-n")) -> No
     console.print(f"Enabled: {', '.join(timers)}. Check with [bold]systemctl --user list-timers[/].")
 
 
-# ---------------------------------------------------------------- not built yet
+# ---------------------------------------------------------------- feature commands
 
-
-def _todo(name: str) -> None:
-    console.print(f"[yellow]`archcare {name}` is not built yet.[/] See README.md for the plan.")
-    raise typer.Exit(2)
-
-
-@app.command()
-def update() -> None:
-    """Update pacman, AUR (yay), snap, npm -g, rustup, uv tools, nvim plugins; check firmware."""
-    _todo("update")
-
-
-@app.command()
-def clean() -> None:
-    """Reclaim space: pacman cache, orphans, Trash, ~/.cache, journal, docker, Downloads."""
-    _todo("clean")
-
-
-@app.command()
-def backup() -> None:
-    """Encrypted restic backup of ~ and /etc to cloud storage."""
-    _todo("backup")
-
-
-@app.command()
-def pacnew() -> None:
-    """Review and merge .pacnew config files safely."""
-    _todo("pacnew")
-
-
-@app.command()
-def doctor() -> None:
-    """One health report: failed units, disk, SSD, battery, mirrors, backups, timers."""
-    _todo("doctor")
-
-
-@app.command()
-def explain() -> None:
-    """Ask an LLM to explain recent errors from the journal in plain English."""
-    _todo("explain")
+app.command()(update_cmd.update)
+app.command()(clean_cmd.clean)
+app.add_typer(backup_cmd.app, name="backup")
+app.command()(pacnew_cmd.pacnew)
+app.command()(doctor_cmd.doctor)
+app.command()(explain_cmd.explain)
+app.command("run")(run_cmd.run)
+app.command("restore-packages")(backup_cmd.restore_packages)
 
 
 def main() -> None:
