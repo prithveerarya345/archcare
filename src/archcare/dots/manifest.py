@@ -24,6 +24,7 @@ DEFAULT_MANIFEST = """\
 max_file_kb = 512            # skip single files bigger than this
 backup_modified_etc = true   # also back up /etc files you changed from package defaults
 push = false                 # git push the dotfiles repo after each sync (set a private remote first)
+package_lists = true         # save pacman/AUR/snap package lists into the repo (for restore-packages)
 exclude = [".git", "__pycache__", "node_modules", "*.log", "*.swp", "*.bak", "*.backup"]
 
 [groups.shell]
@@ -115,6 +116,7 @@ class Manifest:
     max_file_kb: int = 512
     backup_modified_etc: bool = True
     push: bool = False
+    package_lists: bool = True
     exclude: list[str] = field(default_factory=list)
 
     def group_of(self, tilde_path: str) -> str | None:
@@ -164,6 +166,7 @@ def load(path: Path) -> Manifest:
         max_file_kb=int(settings.get("max_file_kb", 512)),
         backup_modified_etc=bool(settings.get("backup_modified_etc", True)),
         push=bool(settings.get("push", False)),
+        package_lists=bool(settings.get("package_lists", True)),
         exclude=list(settings.get("exclude", [])),
     )
 

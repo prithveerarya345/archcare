@@ -12,6 +12,7 @@ MANIFEST = """
 [settings]
 max_file_kb = 1
 backup_modified_etc = false
+package_lists = false
 exclude = [".git", "*.log"]
 
 [groups.shell]

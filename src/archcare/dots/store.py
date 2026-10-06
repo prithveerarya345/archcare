@@ -7,6 +7,7 @@ so "what did my kwinrc look like last week" is `git log -p home/.config/kwinrc`.
 Layout inside the repo:
     home/.bashrc, home/.config/nvim/...   <- tracked files, mirrored from ~
     etc/pacman.conf, ...                  <- /etc files you modified from package defaults
+    packages/native.txt, aur.txt, snap.txt <- installed package lists, for `archcare restore-packages`
     INVENTORY.md                          <- generated list of everything tracked
 """
 
@@ -19,6 +20,7 @@ from dataclasses import dataclass, field
 from fnmatch import fnmatch
 from pathlib import Path
 
+from archcare import packages
 from archcare.dots import secrets
 from archcare.dots.manifest import Manifest
 from archcare.dots.scan import Status, modified_etc_files, scan
@@ -115,6 +117,8 @@ def sync(paths: Paths, m: Manifest, dry_run: bool = False, push: bool | None = N
     for rel in res.removed:
         (repo / rel).unlink()
     prune_empty_dirs(repo)
+    if m.package_lists:
+        packages.export(repo / "packages")
     (repo / "INVENTORY.md").write_text(inventory(paths, m, wanted, skipped))
 
     git(repo, "add", "-A")
